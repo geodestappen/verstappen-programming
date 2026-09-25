@@ -1,9 +1,8 @@
-
 import streamlit as st
 import math
 
 # ============================================================
-# PAGE SETTINGS
+# PAGE CONFIG
 # ============================================================
 
 st.set_page_config(
@@ -13,185 +12,318 @@ st.set_page_config(
 )
 
 # ============================================================
-# F1 STYLE
+# F1 BACKGROUND - RACE LINES ONLY
 # ============================================================
 
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background:
-            linear-gradient(135deg, #050505, #151515 50%, #250000);
-        color: white;
+st.markdown("""
+<style>
+
+/* DARK F1 BACKGROUND */
+.stApp {
+    background:
+        radial-gradient(
+            circle at 45% 25%,
+            #351010 0%,
+            #181818 45%,
+            #050505 100%
+        );
+}
+/* RED SPEED LINES */
+.speed-lines {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 0;
+    pointer-events: none;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0px,
+            transparent 85px,
+            rgba(225,6,0,0.08) 85px,
+            rgba(225,6,0,0.08) 87px
+        );
+
+    animation:
+        speedBackground 2s linear infinite;
+}
+
+@keyframes speedBackground {
+
+    0% {
+        background-position: 0 0;
     }
 
-    .block-container {
-        max-width: 950px;
-        padding-top: 2rem;
-        padding-bottom: 4rem;
+    100% {
+        background-position: 0 170px;
+    }
+}
+
+/* MOVING RED LIGHT */
+.red-light {
+
+    position: fixed;
+
+    top: 0;
+    left: -40%;
+
+    width: 30%;
+    height: 100%;
+
+    z-index: 0;
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(225,6,0,0.08),
+            rgba(225,6,0,0.18),
+            transparent
+        );
+
+    transform: skewX(-20deg);
+
+    animation:
+        lightSweep 4s li    near infinite;
+}
+
+@keyframes lightSweep {
+
+    0% {
+        left: -40%;
     }
 
-    h1, h2, h3 {
-        color: white !important;
+    100% {
+        left: 140%;
+    }
+}
+
+/* F1 TOP STRIPE */
+.f1-racing-stripes {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 7px;
+
+    z-index: 9999;
+    pointer-events: none;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #e10600 0px,
+            #e10600 35px,
+            white 35px,
+            white 50px,
+            #e10600 50px,
+            #e10600 85px
+        );
+
+    background-size: 170px 100%;
+
+    animation:
+        stripeMove 1s linear infinite;
+}
+
+@keyframes stripeMove {
+
+    0% {
+        background-position: 0 0;
     }
 
-    p, label {
-        color: #eeeeee !important;
+    100% {
+        background-position: 170px 0;
+    }
+}
+
+/* CHECKERED FINISH PATTERN */
+.finish-line {
+
+    position: fixed;
+
+    right: 0;
+    top: 0;
+
+    width: 60px;
+    height: 100%;
+
+    opacity: 0.04;
+
+    z-index: 0;
+    pointer-events: none;
+
+    background:
+        conic-gradient(
+            white 25%,
+            transparent 0 50%,
+            white 0 75%,
+            transparent 0
+        )
+        0 0 / 30px 30px;
+}
+
+/* KEEP CONTENT ABOVE BACKGROUND */
+[data-testid="stAppViewContainer"] {
+    position: relative;
+    z-index: 3;
+}
+
+/* ============================================================
+   RED F1 BUTTONS
+   ============================================================ */
+
+.stButton > button {
+
+    background-color: #e10600 !important;
+
+    color: white !important;
+
+    border: 2px solid #ff3b30 !important;
+
+    border-radius: 10px !important;
+
+    font-weight: bold !important;
+
+    min-height: 48px;
+
+    transition:
+        background-color 0.15s,
+        transform 0.15s,
+        box-shadow 0.15s;
+}
+
+.stButton > button:hover {
+
+    background-color: #b80500 !important;
+
+    color: white !important;
+
+    border-color: #ff4d45 !important;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 15px rgba(225,6,0,0.45);
+}
+
+.stButton > button:active {
+
+    background-color: #8f0400 !important;
+
+    transform: translateY(1px);
+}
+
+/* ============================================================
+   CALCULATOR
+   ============================================================ */
+
+.calculator-container {
+
+    max-width: 430px;
+
+    margin: auto;
+}
+
+.calculator-display {
+
+    background: #111111;
+
+    border: 2px solid #e10600;
+
+    border-radius: 12px;
+
+    padding: 18px 15px;
+
+    margin-bottom: 12px;
+
+    text-align: right;
+
+    color: white;
+
+    font-size: 38px;
+
+    font-weight: bold;
+
+    min-height: 55px;
+
+    overflow: hidden;
+
+    word-break: break-all;
+}
+
+.calculator-container .stButton > button {
+
+    width: 100%;
+
+    min-height: 58px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    border-radius: 10px;
+}
+
+/* PHONE */
+@media (max-width: 600px) {
+
+    .race-lines {
+        height: 120px;
     }
 
-    .main-title {
-        text-align: center;
-        font-size: 48px;
-        font-weight: 900;
-        color: white;
-        text-transform: uppercase;
-        text-shadow: 4px 4px 0px #e10600;
-        margin-bottom: 5px;
+    .finish-line {
+        width: 40px;
     }
 
-    .subtitle {
-        text-align: center;
-        color: #cccccc;
-        font-size: 17px;
-        margin-bottom: 30px;
-    }
+    .calculator-container {
 
-    .section-title {
-        font-size: 30px;
-        font-weight: 900;
-        text-transform: uppercase;
-        border-left: 6px solid #e10600;
-        padding-left: 12px;
-        margin-top: 25px;
-        margin-bottom: 20px;
-    }
-
-    .question-number {
-        text-align: center;
-        background: #e10600;
-        color: white;
-        font-weight: 900;
-        padding: 10px;
-        border-radius: 5px;
-        margin: 20px 0;
-    }
-
-    .score-box {
-        text-align: center;
-        background: #181818;
-        border: 3px solid #e10600;
-        border-radius: 10px;
-        padding: 30px;
-        margin: 25px 0;
-        box-shadow: 0 0 20px rgba(225, 6, 0, 0.35);
-    }
-
-    .big-score {
-        font-size: 45px;
-        font-weight: 900;
-        color: white;
-    }
-
-    .progress-container {
-        background: #171717;
-        border: 2px solid #333333;
-        border-radius: 7px;
-        padding: 14px;
-        margin: 20px 0;
-    }
-
-    .progress-label {
-        font-weight: 900;
-        font-size: 14px;
-        margin-bottom: 8px;
-        letter-spacing: 1px;
-    }
-
-    .progress-track {
         width: 100%;
-        height: 18px;
-        background: #333333;
-        border-radius: 4px;
-        overflow: hidden;
-    }
 
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #e10600, #ff3b30);
-        transition: width 0.6s ease;
-    }
-
-    .progress-text {
-        text-align: right;
-        font-size: 12px;
-        margin-top: 5px;
-        color: #bbbbbb;
-    }
-
-    div.stButton > button {
-        width: 100%;
-        min-height: 48px;
-        background: #e10600;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        font-weight: 900;
-        font-size: 16px;
-        transition: 0.2s;
-    }
-
-    div.stButton > button:hover {
-        background: #ff2018;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(225, 6, 0, 0.4);
-    }
-
-    div[data-baseweb="input"] {
-        background: #202020;
+        padding: 0 3px;
     }
 
     .calculator-display {
-        background: #090909;
-        border: 3px solid #e10600;
-        border-radius: 8px;
-        padding: 20px;
-        text-align: right;
-        font-size: 38px;
-        font-weight: 900;
-        margin-bottom: 20px;
-        overflow-x: auto;
+
+        font-size: 31px;
+
+        min-height: 48px;
+
+        padding: 14px 12px;
     }
 
-    .grade-box {
-        background: #181818;
-        border: 3px solid #e10600;
-        border-radius: 10px;
-        padding: 25px;
-        text-align: center;
-        margin: 20px 0;
-    }
+    .calculator-container .stButton > button {
 
-    .grade-letter {
-        font-size: 55px;
-        font-weight: 900;
-    }
+        min-height: 55px;
 
-    .terrararia-tip {
-        background: #142b14;
-        border: 2px solid #3b8f3b;
-        border-radius: 10px;
-        padding: 20px;
-        margin-top: 20px;
+        font-size: 20px;
     }
+}
 
-    .divider {
-        border-top: 2px solid #333333;
-        margin: 35px 0;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+</style>
+
+<div class="f1-racing-stripes"></div>
+
+<div class="race-lines"></div>
+
+<div class="speed-lines"></div>
+
+<div class="red-light"></div>
+
+<div class="finish-line"></div>
+
+""", unsafe_allow_html=True)
+
 
 # ============================================================
 # SESSION STATE
@@ -200,78 +332,68 @@ st.markdown(
 if "page" not in st.session_state:
     st.session_state.page = "home"
 
-if "quiz" not in st.session_state:
-    st.session_state.quiz = []
-
-if "current_question" not in st.session_state:
-    st.session_state.current_question = 0
-
-if "answers" not in st.session_state:
-    st.session_state.answers = {}
-
-if "calculator" not in st.session_state:
-    st.session_state.calculator = "0"
-
-if "calc_old_number" not in st.session_state:
-    st.session_state.calc_old_number = None
-
-if "calc_operator" not in st.session_state:
-    st.session_state.calc_operator = None
-
-if "calc_new_number" not in st.session_state:
-    st.session_state.calc_new_number = True
-
-if "subjects" not in st.session_state:
-    st.session_state.subjects = [
-        {"name": "Mathematics", "marks": 100},
-        {"name": "Science", "marks": 100},
-        {"name": "English", "marks": 100}
-    ]
-
-if "show_grade" not in st.session_state:
-    st.session_state.show_grade = False
-
 
 # ============================================================
-# HOME
+# HOME PAGE
 # ============================================================
 
 def home_page():
 
-    st.markdown(
-        '<div class="main-title">🏎️ F1 Student Hub</div>',
-        unsafe_allow_html=True
+    st.title("🏎️ F1 Student Hub")
+
+    st.write(
+        "Welcome to the F1 Student Hub! "
+        "Choose an application below."
     )
 
-    st.markdown(
-        '<div class="subtitle">Choose an application below</div>',
-        unsafe_allow_html=True
-    )
+    st.divider()
 
     col1, col2 = st.columns(2)
 
     with col1:
-        if st.button("🏁 Quiz Master", use_container_width=True):
+
+        if st.button(
+            "🏁 Quiz Master",
+            use_container_width=True
+        ):
+
             st.session_state.page = "quiz_setup"
+
             st.rerun()
 
     with col2:
-        if st.button("🧮 Calculator", use_container_width=True):
+
+        if st.button(
+            "🧮 Calculator",
+            use_container_width=True
+        ):
+
             st.session_state.page = "calculator"
+
             st.rerun()
 
-    st.markdown("<br>", unsafe_allow_html=True)
+    col1, col2 = st.columns(2)
 
-    col3, col4 = st.columns(2)
+    with col1:
 
-    with col3:
-        if st.button("🎓 Grade Calculator", use_container_width=True):
-            st.session_state.page = "grade"
+        if st.button(
+            "🎓 Grade Calculator",
+            use_container_width=True
+        ):
+
+            st.session_state.page = "grades"
+
             st.rerun()
 
-    with col4:
-        if st.button("👤 My Profile", use_container_width=True):
+    with col2:
+
+        if st.button(
+            "👤 My Profile",
+            use_container_width=True
+        ):
+
             st.session_state.page = "profile"
+
             st.rerun()
 
 
@@ -281,47 +403,75 @@ def home_page():
 
 def profile_page():
 
-    st.markdown(
-        '<div class="main-title">👤 My Profile</div>',
-        unsafe_allow_html=True
-    )
+    st.title("👤 My Profile")
 
-    st.markdown(
-        '<div class="subtitle">Fill in your information below!</div>',
-        unsafe_allow_html=True
+    st.write(
+        "Fill in your information below!"
     )
 
     name = st.text_input("Name")
+
     age = st.number_input(
         "Age",
         min_value=1,
         max_value=100,
-        value=13,
         step=1
     )
-    school = st.text_input("School")
-    subject = st.text_input("Favorite subject")
-    hobby = st.text_input("Favorite hobby")
 
-    if st.button("✨ Create My Profile", use_container_width=True):
+    school = st.text_input("School")
+
+    subject = st.text_input(
+        "Favorite subject"
+    )
+
+    hobby = st.text_input(
+        "Favorite hobby"
+    )
+
+    if st.button(
+        "✨ Create My Profile",
+        use_container_width=True
+    ):
 
         if name and school and subject and hobby:
 
             st.success("Profile created!")
 
-            st.header(f"Hello! My name is {name}.")
-            st.write(f"🎂 I am {age} years old.")
-            st.write(f"🏫 I go to {school}.")
-            st.write(f"📚 My favorite subject is {subject}.")
-            st.write(f"🎮 I enjoy {hobby}.")
+            st.subheader(
+                f"Hello! My name is {name}."
+            )
+
+            st.write(
+                f"🎂 I am {age} years old."
+            )
+
+            st.write(
+                f"🏫 I go to {school}."
+            )
+
+            st.write(
+                f"📚 My favorite subject is {subject}."
+            )
+
+            st.write(
+                f"🎮 I enjoy {hobby}."
+            )
 
         else:
-            st.warning("⚠️ Please fill in all the fields!")
 
-    st.markdown("<br>", unsafe_allow_html=True)
+            st.warning(
+                "Please fill in all the information."
+            )
 
-    if st.button("⬅️ Back to Home", use_container_width=True):
+    st.divider()
+
+    if st.button(
+        "⬅️ Back to Home",
+        use_container_width=True
+    ):
+
         st.session_state.page = "home"
+
         st.rerun()
 
 
@@ -331,14 +481,10 @@ def profile_page():
 
 def quiz_setup_page():
 
-    st.markdown(
-        '<div class="main-title">🏎️ Quiz Master</div>',
-        unsafe_allow_html=True
-    )
+    st.title("🏁 F1 Quiz Master")
 
-    st.markdown(
-        '<div class="subtitle">Create your own quiz and challenge yourself!</div>',
-        unsafe_allow_html=True
+    st.write(
+        "Create your own quiz and test yourself!"
     )
 
     number_of_questions = st.number_input(
@@ -351,100 +497,114 @@ def quiz_setup_page():
 
     questions = []
 
-    for i in range(number_of_questions):
+    st.divider()
 
-        st.markdown(
-            f'<div class="section-title">📝 Question {i + 1}</div>',
-            unsafe_allow_html=True
+    for i in range(
+        int(number_of_questions)
+    ):
+
+        st.subheader(
+            f"Question {i + 1}"
         )
 
         question = st.text_input(
             "Question",
-            placeholder="Enter your question...",
             key=f"question_{i}"
         )
 
-        col1, col2 = st.columns(2)
+        choice_a = st.text_input(
+            "A",
+            key=f"choice_a_{i}"
+        )
 
-        with col1:
-            choice_a = st.text_input(
-                "🔵 Choice A",
-                placeholder="Enter choice A",
-                key=f"choice_a_{i}"
-            )
+        choice_b = st.text_input(
+            "B",
+            key=f"choice_b_{i}"
+        )
 
-        with col2:
-            choice_b = st.text_input(
-                "🟡 Choice B",
-                placeholder="Enter choice B",
-                key=f"choice_b_{i}"
-            )
+        choice_c = st.text_input(
+            "C",
+            key=f"choice_c_{i}"
+        )
 
-        col3, col4 = st.columns(2)
+        choice_d = st.text_input(
+            "D",
+            key=f"choice_d_{i}"
+        )
 
-        with col3:
-            choice_c = st.text_input(
-                "🟢 Choice C",
-                placeholder="Enter choice C",
-                key=f"choice_c_{i}"
-            )
-
-        with col4:
-            choice_d = st.text_input(
-                "🔴 Choice D",
-                placeholder="Enter choice D",
-                key=f"choice_d_{i}"
-            )
-
-        correct = st.radio(
+        correct = st.selectbox(
             "Correct answer",
             ["A", "B", "C", "D"],
-            horizontal=True,
             key=f"correct_{i}"
         )
 
-        questions.append(
-            {
-                "question": question,
-                "A": choice_a,
-                "B": choice_b,
-                "C": choice_c,
-                "D": choice_d,
-                "correct": correct
-            }
-        )
+        questions.append({
 
-    if st.button("🚀 Start Quiz", use_container_width=True):
+            "question": question,
 
-        complete = True
+            "A": choice_a,
+
+            "B": choice_b,
+
+            "C": choice_c,
+
+            "D": choice_d,
+
+            "correct": correct
+        })
+
+    st.divider()
+
+    if st.button(
+        "🏎️ Start Quiz",
+        use_container_width=True
+    ):
+
+        valid = True
 
         for q in questions:
 
-            if (
-                q["question"].strip() == ""
-                or q["A"].strip() == ""
-                or q["B"].strip() == ""
-                or q["C"].strip() == ""
-                or q["D"].strip() == ""
-            ):
-                complete = False
-                break
+            if not q["question"]:
+                valid = False
 
-        if complete:
+            if not q["A"]:
+                valid = False
 
-            st.session_state.quiz = questions
+            if not q["B"]:
+                valid = False
+
+            if not q["C"]:
+                valid = False
+
+            if not q["D"]:
+                valid = False
+
+        if valid:
+
+            st.session_state.questions = questions
+
             st.session_state.current_question = 0
+
             st.session_state.answers = {}
+
             st.session_state.page = "quiz"
+
             st.rerun()
 
         else:
-            st.warning(
-                "⚠️ Please fill in every question and all four choices."
+
+            st.error(
+                "Please fill in every question "
+                "and every answer choice."
             )
 
-    if st.button("⬅️ Back to Home", use_container_width=True):
+    if st.button(
+        "⬅️ Back to Home",
+        use_container_width=True
+    ):
+
         st.session_state.page = "home"
+
         st.rerun()
 
 
@@ -454,62 +614,66 @@ def quiz_setup_page():
 
 def quiz_page():
 
-    quiz = st.session_state.quiz
+    questions = st.session_state.questions
 
     current = st.session_state.current_question
 
-    total = len(quiz)
+    total = len(questions)
 
-    q = quiz[current]
+    q = questions[current]
 
-    st.markdown(
-        '<div class="main-title">🏁 Quiz Time!</div>',
-        unsafe_allow_html=True
+    st.title("🏁 F1 Quiz Master")
+
+    answered_count = len(
+        st.session_state.answers
     )
-
-    answered_count = len(st.session_state.answers)
 
     progress = answered_count / total
 
-    progress_percent = int(progress * 100)
-
-    st.markdown(
-        f'<div class="progress-container">'
-        f'<div class="progress-label">'
-        f'🏁 QUESTIONS ANSWERED: {answered_count} / {total}'
-        f'</div>'
-        f'<div class="progress-track">'
-        f'<div class="progress-fill" '
-        f'style="width:{progress_percent}%;"></div>'
-        f'</div>'
-        f'<div class="progress-text">'
-        f'{progress_percent}% COMPLETE'
-        f'</div>'
-        f'</div>',
-        unsafe_allow_html=True
+    st.progress(
+        progress,
+        text=(
+            f"🏁 {answered_count} / "
+            f"{total} questions answered"
+        )
     )
 
-    st.markdown(
-        f'<div class="question-number">'
-        f'QUESTION {current + 1} OF {total}'
-        f'</div>',
-        unsafe_allow_html=True
+    st.caption(
+        f"Question {current + 1} of {total}"
     )
 
-    st.subheader(q["question"])
+    st.divider()
+
+    st.subheader(
+        q["question"]
+    )
 
     choices = [
+
         f"A. {q['A']}",
+
         f"B. {q['B']}",
+
         f"C. {q['C']}",
+
         f"D. {q['D']}"
     ]
 
-    previous_answer = st.session_state.answers.get(current)
+    previous_answer = (
+        st.session_state.answers.get(current)
+    )
 
     if previous_answer:
-        default_index = ["A", "B", "C", "D"].index(previous_answer)
+
+        default_index = [
+            "A",
+            "B",
+            "C",
+            "D"
+        ].index(previous_answer)
+
     else:
+
         default_index = None
 
     selected = st.radio(
@@ -521,11 +685,13 @@ def quiz_page():
 
     if selected:
 
-        letter = selected[0]
+        st.session_state.answers[current] = (
+            selected[0]
+        )
 
-        st.session_state.answers[current] = letter
+    st.divider()
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
 
@@ -537,6 +703,7 @@ def quiz_page():
             ):
 
                 st.session_state.current_question -= 1
+
                 st.rerun()
 
     with col2:
@@ -548,533 +715,750 @@ def quiz_page():
                 use_container_width=True
             ):
 
-                if current in st.session_state.answers:
+                st.session_state.current_question += 1
 
-                    st.session_state.current_question += 1
-                    st.rerun()
+                st.rerun()
 
-                else:
-                    st.warning("⚠️ Please choose an answer first.")
+    with col3:
 
-        else:
+        if current == total - 1:
 
             if st.button(
-                "🏁 Finish Quiz",
+                "🏁 Finish",
                 use_container_width=True
             ):
 
-                if len(st.session_state.answers) == total:
+                if (
+                    len(st.session_state.answers)
+                    == total
+                ):
 
-                    st.session_state.page = "quiz_complete"
+                    st.session_state.page = (
+                        "quiz_results"
+                    )
+
                     st.rerun()
 
                 else:
+
                     st.warning(
-                        "⚠️ Please answer every question before finishing."
+                        "Please answer every "
+                        "question first."
                     )
 
-    if st.button("🏠 Home", use_container_width=True):
+    if st.button(
+        "🏠 Quit Quiz",
+        use_container_width=True
+    ):
 
         st.session_state.page = "home"
+
         st.rerun()
 
 
 # ============================================================
-# QUIZ COMPLETE
+# QUIZ RESULTS
 # ============================================================
 
-def quiz_complete_page():
+def quiz_results_page():
 
-    quiz = st.session_state.quiz
+    questions = st.session_state.questions
 
-    total = len(quiz)
+    answers = st.session_state.answers
+
+    total = len(questions)
 
     score = 0
 
-    for i, q in enumerate(quiz):
+    for i, q in enumerate(questions):
 
-        if st.session_state.answers.get(i) == q["correct"]:
+        if answers.get(i) == q["correct"]:
+
             score += 1
 
-    st.markdown(
-        '<div class="main-title">🏁 Quiz Complete!</div>',
-        unsafe_allow_html=True
+    percentage = (
+        score / total
+    ) * 100
+
+    st.title("🏆 Quiz Complete!")
+
+    st.metric(
+        "Score",
+        f"{score} / {total}"
     )
 
-    st.markdown(
-        f'<div class="score-box">'
-        f'<div>Your Score</div>'
-        f'<div class="big-score">{score} / {total}</div>'
-        f'</div>',
-        unsafe_allow_html=True
+    st.progress(
+        percentage / 100
     )
 
-    if score == total:
-
-        st.success(
-            "🌟 Perfect score! You got every question correct!"
-        )
-
-    elif score >= total / 2:
-
-        st.info(
-            "👍 Good job! You got more than half correct."
-        )
-
-    else:
-
-        st.warning(
-            "📚 Keep practicing! You can do even better next time."
-        )
-
-    st.markdown(
-        '<div class="divider"></div>',
-        unsafe_allow_html=True
+    st.write(
+        f"You scored {percentage:.0f}%."
     )
 
-    st.subheader("📋 Answer Review")
+    st.divider()
 
-    for i, q in enumerate(quiz):
+    st.subheader(
+        "📋 Answer Review"
+    )
 
-        user_answer = st.session_state.answers.get(i)
+    for i, q in enumerate(questions):
+
+        user_answer = answers.get(i)
 
         correct_answer = q["correct"]
-
-        st.markdown(f"### Question {i + 1}")
-
-        st.write(q["question"])
 
         if user_answer == correct_answer:
 
             st.success(
-                f"✅ Correct — "
-                f"{user_answer}. {q[user_answer]}"
+                f"Question {i + 1}: Correct ✅"
             )
 
         else:
 
             st.error(
-                f"❌ Wrong — "
-                f"Your answer: {user_answer}. "
-                f"{q[user_answer]}"
+                f"Question {i + 1}: "
+                f"Incorrect ❌ — "
+                f"Correct answer: "
+                f"{correct_answer}"
             )
 
-            st.info(
-                f"✅ Correct answer: "
-                f"{correct_answer}. "
-                f"{q[correct_answer]}"
+    st.divider()
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        if st.button(
+            "🔄 Take Quiz Again",
+            use_container_width=True
+        ):
+
+            st.session_state.page = (
+                "quiz_setup"
             )
 
-    if st.button(
-        "🔄 Create New Quiz",
-        use_container_width=True
-    ):
+            st.rerun()
 
-        st.session_state.page = "quiz_setup"
-        st.session_state.current_question = 0
-        st.session_state.answers = {}
-        st.rerun()
+    with col2:
 
-    if st.button("🏠 Home", use_container_width=True):
+        if st.button(
+            "🏠 Home",
+            use_container_width=True
+        ):
 
-        st.session_state.page = "home"
-        st.rerun()
+            st.session_state.page = "home"
+
+            st.rerun()
 
 
 # ============================================================
-# CALCULATOR FUNCTIONS
-# ============================================================
-
-def calculator_number(number):
-
-    if st.session_state.calc_new_number:
-
-        st.session_state.calculator = number
-
-        st.session_state.calc_new_number = False
-
-    else:
-
-        if st.session_state.calculator == "0":
-
-            st.session_state.calculator = number
-
-        else:
-
-            st.session_state.calculator += number
-
-
-def calculator_decimal():
-
-    if st.session_state.calc_new_number:
-
-        st.session_state.calculator = "0."
-        st.session_state.calc_new_number = False
-
-    elif "." not in st.session_state.calculator:
-
-        st.session_state.calculator += "."
-
-
-def calculator_operator(operator):
-
-    try:
-
-        st.session_state.calc_old_number = float(
-            st.session_state.calculator
-        )
-
-        st.session_state.calc_operator = operator
-
-        st.session_state.calc_new_number = True
-
-    except ValueError:
-
-        st.session_state.calculator = "0"
-
-
-def calculator_equals():
-
-    if (
-        st.session_state.calc_old_number is None
-        or st.session_state.calc_operator is None
-    ):
-        return
-
-    try:
-
-        first = st.session_state.calc_old_number
-
-        second = float(st.session_state.calculator)
-
-        operator = st.session_state.calc_operator
-
-        if operator == "+":
-
-            answer = first + second
-
-        elif operator == "-":
-
-            answer = first - second
-
-        elif operator == "*":
-
-            answer = first * second
-
-        elif operator == "/":
-
-            if second == 0:
-
-                st.session_state.calculator = "Error"
-
-                st.session_state.calc_old_number = None
-                st.session_state.calc_operator = None
-                st.session_state.calc_new_number = True
-
-                return
-
-            answer = first / second
-
-        else:
-
-            return
-
-        if answer == int(answer):
-
-            st.session_state.calculator = str(int(answer))
-
-        else:
-
-            st.session_state.calculator = str(answer)
-
-        st.session_state.calc_old_number = None
-        st.session_state.calc_operator = None
-        st.session_state.calc_new_number = True
-
-    except ValueError:
-
-        st.session_state.calculator = "Error"
-
-
-def calculator_clear():
-
-    st.session_state.calculator = "0"
-
-    st.session_state.calc_old_number = None
-
-    st.session_state.calc_operator = None
-
-    st.session_state.calc_new_number = True
-
-
-def calculator_delete():
-
-    if not st.session_state.calc_new_number:
-
-        st.session_state.calculator = (
-            st.session_state.calculator[:-1]
-        )
-
-        if st.session_state.calculator in ["", "-"]:
-
-            st.session_state.calculator = "0"
-
-
-def calculator_percent():
-
-    try:
-
-        number = float(st.session_state.calculator)
-
-        answer = number / 100
-
-        if answer == int(answer):
-
-            st.session_state.calculator = str(int(answer))
-
-        else:
-
-            st.session_state.calculator = str(answer)
-
-    except ValueError:
-
-        st.session_state.calculator = "Error"
-
-
-def calculator_plus_minus():
-
-    if st.session_state.calculator != "0":
-
-        if st.session_state.calculator.startswith("-"):
-
-            st.session_state.calculator = (
-                st.session_state.calculator[1:]
-            )
-
-        else:
-
-            st.session_state.calculator = (
-                "-" + st.session_state.calculator
-            )
-
-
-# ============================================================
-# CALCULATOR PAGE
+# CALCULATOR
 # ============================================================
 
 def calculator_page():
 
     st.markdown(
-        '<div class="main-title">🧮 Calculator</div>',
+        '<div class="calculator-container">',
         unsafe_allow_html=True
     )
+
+    st.title("🧮 Calculator")
+
+    # -----------------------------
+    # Calculator state
+    # -----------------------------
+
+    if "calc_display" not in st.session_state:
+
+        st.session_state.calc_display = "0"
+
+    if "calc_first_number" not in st.session_state:
+
+        st.session_state.calc_first_number = None
+
+    if "calc_operator" not in st.session_state:
+
+        st.session_state.calc_operator = None
+
+    if "calc_new_number" not in st.session_state:
+
+        st.session_state.calc_new_number = True
+
+    # -----------------------------
+    # Calculator functions
+    # -----------------------------
+
+    def format_result(number):
+
+        if number is None:
+
+            return "Error"
+
+        if not math.isfinite(number):
+
+            return "Error"
+
+        if number == int(number):
+
+            return str(int(number))
+
+        return str(
+            round(number, 10)
+        )
+
+    def calculate_result(
+        first,
+        second,
+        operator
+    ):
+
+        if operator == "+":
+
+            return first + second
+
+        elif operator == "-":
+
+            return first - second
+
+        elif operator == "×":
+
+            return first * second
+
+        elif operator == "÷":
+
+            if second == 0:
+
+                return None
+
+            return first / second
+
+        return second
+
+    def press_number(number):
+
+        if st.session_state.calc_new_number:
+
+            st.session_state.calc_display = number
+
+            st.session_state.calc_new_number = False
+
+        else:
+
+            if (
+                st.session_state.calc_display
+                == "0"
+            ):
+
+                st.session_state.calc_display = number
+
+            else:
+
+                st.session_state.calc_display += number
+
+    def press_decimal():
+
+        if st.session_state.calc_new_number:
+
+            st.session_state.calc_display = "0."
+
+            st.session_state.calc_new_number = False
+
+        elif "." not in st.session_state.calc_display:
+
+            st.session_state.calc_display += "."
+
+    def press_operator(operator):
+
+        try:
+
+            current = float(
+                st.session_state.calc_display
+            )
+
+            if (
+                st.session_state.calc_first_number
+                is not None
+                and
+                st.session_state.calc_operator
+                is not None
+                and
+                not st.session_state.calc_new_number
+            ):
+
+                result = calculate_result(
+
+                    st.session_state.calc_first_number,
+
+                    current,
+
+                    st.session_state.calc_operator
+                )
+
+                if result is None:
+
+                    st.session_state.calc_display = (
+                        "Error"
+                    )
+
+                    return
+
+                st.session_state.calc_display = (
+                    format_result(result)
+                )
+
+                current = result
+
+            st.session_state.calc_first_number = current
+
+            st.session_state.calc_operator = operator
+
+            st.session_state.calc_new_number = True
+
+        except:
+
+            st.session_state.calc_display = "Error"
+
+    def press_equals():
+
+        if (
+            st.session_state.calc_first_number
+            is None
+            or
+            st.session_state.calc_operator
+            is None
+        ):
+
+            return
+
+        try:
+
+            first = (
+                st.session_state.calc_first_number
+            )
+
+            second = float(
+                st.session_state.calc_display
+            )
+
+            operator = (
+                st.session_state.calc_operator
+            )
+
+            result = calculate_result(
+                first,
+                second,
+                operator
+            )
+
+            if result is None:
+
+                st.session_state.calc_display = (
+                    "Error"
+                )
+
+            else:
+
+                st.session_state.calc_display = (
+                    format_result(result)
+                )
+
+            st.session_state.calc_first_number = None
+
+            st.session_state.calc_operator = None
+
+            st.session_state.calc_new_number = True
+
+        except:
+
+            st.session_state.calc_display = "Error"
+
+    def clear_calculator():
+
+        st.session_state.calc_display = "0"
+
+        st.session_state.calc_first_number = None
+
+        st.session_state.calc_operator = None
+
+        st.session_state.calc_new_number = True
+
+    def delete_number():
+
+        if st.session_state.calc_new_number:
+
+            return
+
+        current = (
+            st.session_state.calc_display
+        )
+
+        if len(current) <= 1:
+
+            st.session_state.calc_display = "0"
+
+        else:
+
+            st.session_state.calc_display = (
+                current[:-1]
+            )
+
+    def plus_minus():
+
+        if (
+            st.session_state.calc_display
+            == "0"
+        ):
+
+            return
+
+        if st.session_state.calc_display.startswith("-"):
+
+            st.session_state.calc_display = (
+                st.session_state.calc_display[1:]
+            )
+
+        else:
+
+            st.session_state.calc_display = (
+                "-" +
+                st.session_state.calc_display
+            )
+
+    def percentage():
+
+        try:
+
+            number = float(
+                st.session_state.calc_display
+            )
+
+            st.session_state.calc_display = (
+                format_result(
+                    number / 100
+                )
+            )
+
+        except:
+
+            st.session_state.calc_display = "Error"
+
+    # -----------------------------
+    # Display
+    # -----------------------------
 
     st.markdown(
-        f'<div class="calculator-display">'
-        f'{st.session_state.calculator}'
-        f'</div>',
+        f"""
+        <div class="calculator-display">
+            {st.session_state.calc_display}
+        </div>
+        """,
         unsafe_allow_html=True
     )
 
+    # ========================================================
     # ROW 1
+    # AC | ± | % | ÷
+    # ========================================================
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns(
+        4,
+        gap="small"
+    )
 
     with col1:
-        st.button(
+
+        if st.button(
             "AC",
             key="calc_ac",
-            use_container_width=True,
-            on_click=calculator_clear
-        )
+            use_container_width=True
+        ):
+
+            clear_calculator()
+
+            st.rerun()
 
     with col2:
-        st.button(
+
+        if st.button(
             "±",
-            key="calc_pm",
-            use_container_width=True,
-            on_click=calculator_plus_minus
-        )
+            key="calc_plus_minus",
+            use_container_width=True
+        ):
+
+            plus_minus()
+
+            st.rerun()
 
     with col3:
-        st.button(
+
+        if st.button(
             "%",
             key="calc_percent",
-            use_container_width=True,
-            on_click=calculator_percent
-        )
+            use_container_width=True
+        ):
+
+            percentage()
+
+            st.rerun()
 
     with col4:
-        st.button(
+
+        if st.button(
             "÷",
             key="calc_divide",
-            use_container_width=True,
-            on_click=calculator_operator,
-            args=("/",)
-        )
+            use_container_width=True
+        ):
 
+            press_operator("÷")
+
+            st.rerun()
+
+    # ========================================================
     # ROW 2
+    # 7 | 8 | 9 | ×
+    # ========================================================
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns(
+        4,
+        gap="small"
+    )
 
     with col1:
-        st.button(
+
+        if st.button(
             "7",
             key="calc_7",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("7",)
-        )
+            use_container_width=True
+        ):
+
+            press_number("7")
+
+            st.rerun()
 
     with col2:
-        st.button(
+
+        if st.button(
             "8",
             key="calc_8",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("8",)
-        )
+            use_container_width=True
+        ):
+
+            press_number("8")
+
+            st.rerun()
 
     with col3:
-        st.button(
+
+        if st.button(
             "9",
             key="calc_9",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("9",)
-        )
+            use_container_width=True
+        ):
+
+            press_number("9")
+
+            st.rerun()
 
     with col4:
-        st.button(
+
+        if st.button(
             "×",
             key="calc_multiply",
-            use_container_width=True,
-            on_click=calculator_operator,
-            args=("*",)
-        )
+            use_container_width=True
+        ):
 
+            press_operator("×")
+
+            st.rerun()
+
+    # ========================================================
     # ROW 3
+    # 4 | 5 | 6 | -
+    # ========================================================
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns(
+        4,
+        gap="small"
+    )
 
     with col1:
-        st.button(
+
+        if st.button(
             "4",
             key="calc_4",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("4",)
-        )
+            use_container_width=True
+        ):
+
+            press_number("4")
+
+            st.rerun()
 
     with col2:
-        st.button(
+
+        if st.button(
             "5",
             key="calc_5",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("5",)
-        )
+            use_container_width=True
+        ):
+
+            press_number("5")
+
+            st.rerun()
 
     with col3:
-        st.button(
+
+        if st.button(
             "6",
             key="calc_6",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("6",)
-        )
+            use_container_width=True
+        ):
+
+            press_number("6")
+
+            st.rerun()
 
     with col4:
-        st.button(
+
+        if st.button(
             "−",
             key="calc_minus",
-            use_container_width=True,
-            on_click=calculator_operator,
-            args=("-",)
-        )
+            use_container_width=True
+        ):
 
+            press_operator("-")
+
+            st.rerun()
+
+    # ========================================================
     # ROW 4
+    # 1 | 2 | 3 | +
+    # ========================================================
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns(
+        4,
+        gap="small"
+    )
 
     with col1:
-        st.button(
+
+        if st.button(
             "1",
             key="calc_1",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("1",)
-        )
+            use_container_width=True
+        ):
+
+            press_number("1")
+
+            st.rerun()
 
     with col2:
-        st.button(
+
+        if st.button(
             "2",
             key="calc_2",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("2",)
-        )
+            use_container_width=True
+        ):
+
+            press_number("2")
+
+            st.rerun()
 
     with col3:
-        st.button(
+
+        if st.button(
             "3",
             key="calc_3",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("3",)
-        )
+            use_container_width=True
+        ):
+
+            press_number("3")
+
+            st.rerun()
 
     with col4:
-        st.button(
+
+        if st.button(
             "+",
             key="calc_plus",
-            use_container_width=True,
-            on_click=calculator_operator,
-            args=("+",)
-        )
+            use_container_width=True
+        ):
 
+            press_operator("+")
+
+            st.rerun()
+
+    # ========================================================
     # ROW 5
+    # 0 | . | DELETE | =
+    # ========================================================
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4 = st.columns(
+        4,
+        gap="small"
+    )
 
     with col1:
-        st.button(
-            "⌫",
-            key="calc_delete",
-            use_container_width=True,
-            on_click=calculator_delete
-        )
 
-    with col2:
-        st.button(
+        if st.button(
             "0",
             key="calc_0",
-            use_container_width=True,
-            on_click=calculator_number,
-            args=("0",)
-        )
+            use_container_width=True
+        ):
 
-    with col3:
-        st.button(
+            press_number("0")
+
+            st.rerun()
+
+    with col2:
+
+        if st.button(
             ".",
             key="calc_decimal",
-            use_container_width=True,
-            on_click=calculator_decimal
-        )
+            use_container_width=True
+        ):
+
+            press_decimal()
+
+            st.rerun()
+
+    with col3:
+
+        if st.button(
+            "⌫",
+            key="calc_delete",
+            use_container_width=True
+        ):
+
+            delete_number()
+
+            st.rerun()
 
     with col4:
-        st.button(
+
+        if st.button(
             "=",
             key="calc_equals",
-            use_container_width=True,
-            on_click=calculator_equals
-        )
+            use_container_width=True
+        ):
 
-    st.markdown("<br>", unsafe_allow_html=True)
+            press_equals()
 
-    if st.button("🏠 Back to Home", use_container_width=True):
+            st.rerun()
+
+    st.markdown(
+        "</div>",
+        unsafe_allow_html=True
+    )
+
+    st.divider()
+
+    if st.button(
+        "⬅️ Back to Home",
+        use_container_width=True
+    ):
 
         st.session_state.page = "home"
+
         st.rerun()
 
 
@@ -1082,308 +1466,223 @@ def calculator_page():
 # GRADE CALCULATOR
 # ============================================================
 
-def get_grade(percentage):
+def grades_page():
 
-    if percentage >= 90:
-        return "A+"
+    st.title("🎓 Grade Calculator")
 
-    elif percentage >= 85:
-        return "A"
-
-    elif percentage >= 80:
-        return "A-"
-
-    elif percentage >= 75:
-        return "B+"
-
-    elif percentage >= 70:
-        return "B"
-
-    elif percentage >= 65:
-        return "B-"
-
-    elif percentage >= 60:
-        return "C+"
-
-    elif percentage >= 55:
-        return "C"
-
-    elif percentage >= 50:
-        return "D"
-
-    else:
-        return "F"
-
-
-def get_gpa(percentage):
-
-    if percentage >= 90:
-        return 4.0
-
-    elif percentage >= 85:
-        return 3.7
-
-    elif percentage >= 80:
-        return 3.3
-
-    elif percentage >= 75:
-        return 3.0
-
-    elif percentage >= 70:
-        return 2.7
-
-    elif percentage >= 65:
-        return 2.3
-
-    elif percentage >= 60:
-        return 2.0
-
-    elif percentage >= 55:
-        return 1.5
-
-    elif percentage >= 50:
-        return 1.0
-
-    else:
-        return 0.0
-
-
-def reset_grade():
-
-    st.session_state.subjects = [
-        {"name": "Mathematics", "marks": 100},
-        {"name": "Science", "marks": 100},
-        {"name": "English", "marks": 100}
-    ]
-
-    st.session_state.show_grade = False
-
-
-def grade_page():
-
-    st.markdown(
-        '<div class="main-title">🎓 Grade Calculator</div>',
-        unsafe_allow_html=True
+    st.write(
+        "Enter your subjects and marks."
     )
 
-    st.markdown(
-        '<div class="subtitle">'
-        'Calculate your marks, percentage, grade and GPA'
-        '</div>',
-        unsafe_allow_html=True
+    number_of_subjects = st.number_input(
+        "Number of subjects",
+        min_value=1,
+        max_value=12,
+        value=5,
+        step=1
     )
 
-    st.subheader("📚 Your Subjects")
+    subjects = []
 
-    for i, subject in enumerate(st.session_state.subjects):
+    for i in range(
+        int(number_of_subjects)
+    ):
 
-        col1, col2 = st.columns([2, 1])
+        col1, col2 = st.columns(2)
 
         with col1:
 
             name = st.text_input(
-                "Subject",
-                value=subject["name"],
-                key=f"grade_name_{i}"
+                f"Subject {i + 1}",
+                key=f"grade_subject_{i}"
             )
 
         with col2:
 
-            marks = st.number_input(
-                "Marks",
-                min_value=0,
-                max_value=100,
-                value=int(subject["marks"]),
-                step=1,
-                key=f"grade_marks_{i}"
+            mark = st.number_input(
+                f"Mark {i + 1}",
+                min_value=0.0,
+                max_value=100.0,
+                value=0.0,
+                step=1.0,
+                key=f"grade_mark_{i}"
             )
 
-        st.session_state.subjects[i]["name"] = name
-        st.session_state.subjects[i]["marks"] = marks
+        subjects.append({
 
-    col1, col2 = st.columns(2)
+            "name": name,
 
-    with col1:
-
-        if st.button(
-            "➕ Add Subject",
-            use_container_width=True
-        ):
-
-            number = len(st.session_state.subjects) + 1
-
-            st.session_state.subjects.append(
-                {
-                    "name": f"Subject {number}",
-                    "marks": 0
-                }
-            )
-
-            st.session_state.show_grade = False
-
-            st.rerun()
-
-    with col2:
-
-        if st.button(
-            "🗑️ Reset",
-            use_container_width=True
-        ):
-
-            reset_grade()
-            st.rerun()
+            "mark": mark
+        })
 
     if st.button(
-        "🎯 Calculate My Grade",
+        "📊 Calculate Grades",
         use_container_width=True
     ):
 
-        st.session_state.show_grade = True
+        valid_subjects = [
+            s
+            for s in subjects
+            if s["name"]
+        ]
 
-    if st.session_state.show_grade:
-
-        subjects = st.session_state.subjects
-
-        total_marks = sum(
-            subject["marks"]
-            for subject in subjects
-        )
-
-        maximum_marks = len(subjects) * 100
-
-        if maximum_marks > 0:
-
-            percentage = (
-                total_marks / maximum_marks
-            ) * 100
-
-        else:
-
-            percentage = 0
-
-        grade = get_grade(percentage)
-
-        gpa = get_gpa(percentage)
-
-        st.divider()
-
-        st.subheader("📊 Your Results")
-
-        col1, col2, col3 = st.columns(3)
-
-        with col1:
-
-            st.metric(
-                "Total Marks",
-                f"{total_marks}/{maximum_marks}"
-            )
-
-        with col2:
-
-            st.metric(
-                "Percentage",
-                f"{percentage:.1f}%"
-            )
-
-        with col3:
-
-            st.metric(
-                "GPA",
-                f"{gpa:.2f}/4.0"
-            )
-
-        st.markdown(
-            f'<div class="grade-box">'
-            f'<div>Overall Grade</div>'
-            f'<div class="grade-letter">{grade}</div>'
-            f'<div>Average: {percentage:.1f}%</div>'
-            f'</div>',
-            unsafe_allow_html=True
-        )
-
-        st.write("📈 Overall Performance")
-
-        st.progress(
-            min(max(percentage / 100, 0), 1)
-        )
-
-        st.subheader("📚 Subject Results")
-
-        for subject in subjects:
-
-            subject_grade = get_grade(
-                subject["marks"]
-            )
-
-            col1, col2, col3 = st.columns(
-                [2, 1, 1]
-            )
-
-            with col1:
-                st.write(
-                    f"**{subject['name']}**"
-                )
-
-            with col2:
-                st.write(
-                    f"{subject['marks']}/100"
-                )
-
-            with col3:
-                st.write(
-                    f"**{subject_grade}**"
-                )
-
-        if percentage >= 90:
-
-            st.success(
-                "🏆 Outstanding! You're doing amazing!"
-            )
-
-        elif percentage >= 75:
-
-            st.success(
-                "👏 Great job! Keep it up!"
-            )
-
-        elif percentage >= 60:
-
-            st.info(
-                "📘 Good effort! Keep improving!"
-            )
-
-        elif percentage >= 50:
+        if not valid_subjects:
 
             st.warning(
-                "💪 You're passing, but there's room to improve!"
+                "Please enter at least one subject."
             )
 
         else:
 
-            st.error(
-                "📚 Keep practicing. You can improve!"
+            total = sum(
+                s["mark"]
+                for s in valid_subjects
             )
 
-        # Terraria tip
+            average = (
+                total /
+                len(valid_subjects)
+            )
 
-        st.markdown(
-            '<div class="terrararia-tip">'
-            '<h3>🌲 Terraria Tip</h3>'
-            '<p>'
-            'Explore underground areas and collect useful '
-            'materials early. Building a good base and '
-            'preparing your equipment will make your '
-            'adventures much easier!'
-            '</p>'
-            '</div>',
-            unsafe_allow_html=True
-        )
+            st.divider()
 
-    st.markdown("<br>", unsafe_allow_html=True)
+            st.subheader(
+                f"Average: {average:.2f}%"
+            )
 
-    if st.button("🏠 Back to Home", use_container_width=True):
+            if average >= 90:
+
+                performance = (
+                    "Excellent 🌟"
+                )
+
+            elif average >= 80:
+
+                performance = (
+                    "Very Good 🏆"
+                )
+
+            elif average >= 70:
+
+                performance = (
+                    "Good 👍"
+                )
+
+            elif average >= 60:
+
+                performance = (
+                    "Passing 🙂"
+                )
+
+            else:
+
+                performance = (
+                    "Keep Practicing 💪"
+                )
+
+            st.info(
+                f"Overall performance: "
+                f"{performance}"
+            )
+
+            st.divider()
+
+            for subject in valid_subjects:
+
+                mark = subject["mark"]
+
+                if mark >= 90:
+
+                    grade = "A"
+
+                elif mark >= 80:
+
+                    grade = "B"
+
+                elif mark >= 70:
+
+                    grade = "C"
+
+                elif mark >= 60:
+
+                    grade = "D"
+
+                else:
+
+                    grade = "F"
+
+                st.write(
+                    f"**{subject['name']}** — "
+                    f"{mark:.0f}% — "
+                    f"Grade **{grade}**"
+                )
+
+            st.divider()
+
+            if average >= 90:
+
+                gpa = 4.0
+
+            elif average >= 80:
+
+                gpa = 3.0
+
+            elif average >= 70:
+
+                gpa = 2.0
+
+            elif average >= 60:
+
+                gpa = 1.0
+
+            else:
+
+                gpa = 0.0
+
+            st.metric(
+                "Estimated GPA",
+                f"{gpa:.1f}"
+            )
+
+            st.divider()
+
+            st.subheader(
+                "🎮 Terraria Tip"
+            )
+
+            tips = [
+
+                "Build a small arena before fighting a boss.",
+
+                "Keep healing potions in your hotbar.",
+
+                "Explore underground areas for useful ores and accessories.",
+
+                "Make several NPC houses early in the game.",
+
+                "Always keep some blocks and a grappling hook with you.",
+
+                "Upgrade your equipment before taking on a difficult boss."
+            ]
+
+            tip_number = (
+                int(average)
+                % len(tips)
+            )
+
+            st.success(
+                tips[tip_number]
+            )
+
+    st.divider()
+
+    if st.button(
+        "⬅️ Back to Home",
+        use_container_width=True
+    ):
 
         st.session_state.page = "home"
+
         st.rerun()
 
 
@@ -1399,6 +1698,14 @@ elif st.session_state.page == "profile":
 
     profile_page()
 
+elif st.session_state.page == "calculator":
+
+    calculator_page()
+
+elif st.session_state.page == "grades":
+
+    grades_page()
+
 elif st.session_state.page == "quiz_setup":
 
     quiz_setup_page()
@@ -1407,14 +1714,12 @@ elif st.session_state.page == "quiz":
 
     quiz_page()
 
-elif st.session_state.page == "quiz_complete":
+elif st.session_state.page == "quiz_results":
 
-    quiz_complete_page()
+    quiz_results_page()
 
-elif st.session_state.page == "calculator":
+else:
 
-    calculator_page()
+    st.session_state.page = "home"
 
-elif st.session_state.page == "grade":
-
-    grade_page()
+    st.rerun()
