@@ -21,16 +21,69 @@ st.markdown("""
 .stApp {
     background:
         radial-gradient(
-            circle at 50% 20%,
-            #260909 0%,
-            #111111 45%,
-            #050505 100%
+            circle at 50% 15%,
+            #1a1a1a 0%,
+            #0d0d0d 45%,
+            #030303 100%
         );
 }
 
-/* THICK STATIC RED LINES */
+/* NEON CITY GRID FLOOR */
 
-.race-lines {
+.neon-grid {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 32%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.22;
+
+    background-image:
+        linear-gradient(rgba(225, 6, 0, 0.6) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.35) 1px, transparent 1px);
+
+    background-size: 42px 42px;
+
+    transform: perspective(220px) rotateX(58deg);
+    transform-origin: bottom;
+
+    mask-image: linear-gradient(to top, black 0%, transparent 90%);
+    -webkit-mask-image: linear-gradient(to top, black 0%, transparent 90%);
+}
+
+/* NEON CITY SKYLINE SILHOUETTE */
+
+.neon-skyline {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+
+    background-repeat: repeat-x;
+    background-position: bottom;
+    background-size: 768px 100%;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 768 260'%3E%3Crect x='0' y='170' width='50' height='90' fill='%23000000' opacity='0.7'/%3E%3Crect x='64' y='110' width='50' height='150' fill='%23000000' opacity='0.7'/%3E%3Crect x='128' y='190' width='50' height='70' fill='%23000000' opacity='0.7'/%3E%3Crect x='192' y='80' width='50' height='180' fill='%23000000' opacity='0.7'/%3E%3Crect x='256' y='140' width='50' height='120' fill='%23000000' opacity='0.7'/%3E%3Crect x='320' y='60' width='50' height='200' fill='%23000000' opacity='0.7'/%3E%3Crect x='384' y='170' width='50' height='90' fill='%23000000' opacity='0.7'/%3E%3Crect x='448' y='100' width='50' height='160' fill='%23000000' opacity='0.7'/%3E%3Crect x='512' y='150' width='50' height='110' fill='%23000000' opacity='0.7'/%3E%3Crect x='576' y='80' width='50' height='180' fill='%23000000' opacity='0.7'/%3E%3Crect x='640' y='160' width='50' height='100' fill='%23000000' opacity='0.7'/%3E%3Crect x='704' y='110' width='50' height='150' fill='%23000000' opacity='0.7'/%3E%3Crect x='78' y='130' width='4' height='6' fill='%23e10600' opacity='0.6'/%3E%3Crect x='78' y='160' width='4' height='6' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='100' y='140' width='4' height='6' fill='%23e10600' opacity='0.5'/%3E%3Crect x='206' y='100' width='4' height='6' fill='%23ffffff' opacity='0.4'/%3E%3Crect x='206' y='130' width='4' height='6' fill='%23e10600' opacity='0.6'/%3E%3Crect x='228' y='110' width='4' height='6' fill='%23e10600' opacity='0.5'/%3E%3Crect x='334' y='80' width='4' height='6' fill='%23e10600' opacity='0.6'/%3E%3Crect x='334' y='110' width='4' height='6' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='356' y='95' width='4' height='6' fill='%23e10600' opacity='0.5'/%3E%3Crect x='356' y='140' width='4' height='6' fill='%23ffffff' opacity='0.4'/%3E%3Crect x='462' y='115' width='4' height='6' fill='%23ffffff' opacity='0.4'/%3E%3Crect x='462' y='145' width='4' height='6' fill='%23e10600' opacity='0.6'/%3E%3Crect x='484' y='130' width='4' height='6' fill='%23e10600' opacity='0.5'/%3E%3Crect x='590' y='95' width='4' height='6' fill='%23e10600' opacity='0.6'/%3E%3Crect x='590' y='125' width='4' height='6' fill='%23ffffff' opacity='0.35'/%3E%3Crect x='612' y='110' width='4' height='6' fill='%23e10600' opacity='0.5'/%3E%3Crect x='718' y='125' width='4' height='6' fill='%23ffffff' opacity='0.4'/%3E%3Crect x='718' y='155' width='4' height='6' fill='%23e10600' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+/* SOFT MOVING SPEED STREAKS */
+
+@keyframes speedStreakMove {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: -600px 300px;
+    }
+}
+
+.speed-streaks {
     position: fixed;
     top: 0;
     left: 0;
@@ -41,14 +94,42 @@ st.markdown("""
 
     background:
         repeating-linear-gradient(
-            90deg,
+            115deg,
             transparent 0px,
-            transparent 55px,
-            rgba(225, 6, 0, 0.75) 55px,
-            rgba(225, 6, 0, 0.75) 75px,
-            transparent 75px,
-            transparent 140px
+            transparent 160px,
+            rgba(225, 6, 0, 0.18) 160px,
+            rgba(225, 6, 0, 0.18) 163px,
+            transparent 163px,
+            transparent 320px,
+            rgba(255, 255, 255, 0.04) 320px,
+            rgba(255, 255, 255, 0.04) 322px,
+            transparent 322px,
+            transparent 480px
         );
+
+    background-size: 600px 300px;
+    animation: speedStreakMove 6s linear infinite;
+}
+
+/* SOFT RED CITY GLOW ON THE HORIZON */
+
+.glow-accent {
+    position: fixed;
+    bottom: -5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140%;
+    height: 26%;
+    z-index: 0;
+    pointer-events: none;
+
+    background: radial-gradient(
+        ellipse at center,
+        rgba(225, 6, 0, 0.20) 0%,
+        rgba(225, 6, 0, 0) 70%
+    );
+
+    filter: blur(10px);
 }
 
 /* Keep Streamlit content above background */
@@ -63,62 +144,118 @@ st.markdown("""
     z-index: 10;
 }
 
-/* TOP F1 STRIPE */
+/* TOP CHEQUERED FLAG STRIPE (ANIMATED) */
+
+@keyframes checkerMove {
+    0% {
+        background-position: 0 0, 0 9px, 9px -9px, -9px 0px;
+    }
+    100% {
+        background-position: 180px 0, 180px 9px, 189px -9px, 171px 0px;
+    }
+}
 
 .f1-racing-stripes {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 7px;
+    height: 10px;
     z-index: 9999;
     pointer-events: none;
 
-    background:
-        repeating-linear-gradient(
-            90deg,
-            #e10600 0px,
-            #e10600 35px,
-            white 35px,
-            white 50px,
-            #e10600 50px,
-            #e10600 85px
-        );
+    background-color: #1a1a1a;
+    background-image:
+        linear-gradient(45deg, #e8e8e8 25%, transparent 25%),
+        linear-gradient(-45deg, #e8e8e8 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #e8e8e8 75%),
+        linear-gradient(-45deg, transparent 75%, #e8e8e8 75%);
+
+    background-size: 18px 18px;
+    background-position: 0 0, 0 9px, 9px -9px, -9px 0px;
+
+    animation: checkerMove 3s linear infinite;
+
+    box-shadow: 0 0 12px rgba(225, 6, 0, 0.5);
+    border-bottom: 1px solid #e10600;
 }
 
-/* RED BUTTONS */
+/* RED BUTTONS — BIG, GLOSSY, WITH A SHINE SWEEP */
 
 .stButton > button {
-    background-color: #e10600 !important;
+    background: linear-gradient(135deg, #ff2200 0%, #b80500 100%) !important;
     color: white !important;
 
-    border: 2px solid #ff3b30 !important;
-    border-radius: 10px !important;
+    border: 2px solid #ff5c48 !important;
+    border-radius: 14px !important;
 
-    font-weight: bold !important;
-    min-height: 48px;
+    font-weight: 800 !important;
+    font-size: 18px !important;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+
+    min-height: 66px;
+    padding: 0 24px;
+
+    position: relative;
+    overflow: hidden;
+
+    box-shadow:
+        0 4px 0 #6e0300,
+        0 10px 22px rgba(225, 6, 0, 0.4);
 
     transition:
-        background-color 0.15s,
-        transform 0.15s,
-        box-shadow 0.15s;
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.3s ease,
+        border-color 0.2s ease;
+}
+
+/* diagonal shine that sweeps across on hover */
+
+.stButton > button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 45%;
+    height: 100%;
+
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.45),
+        transparent
+    );
+
+    transform: skewX(-25deg);
+    transition: left 0.6s ease;
+}
+
+.stButton > button:hover::before {
+    left: 130%;
 }
 
 .stButton > button:hover {
-    background-color: #b80500 !important;
+    background: linear-gradient(135deg, #ff4326 0%, #d40600 100%) !important;
     color: white !important;
 
-    border-color: #ff4d45 !important;
+    border-color: #ffffff !important;
 
-    transform: translateY(-2px);
+    transform: translateY(-4px) scale(1.03);
 
     box-shadow:
-        0 5px 15px rgba(225, 6, 0, 0.45);
+        0 6px 0 #6e0300,
+        0 16px 30px rgba(225, 6, 0, 0.55),
+        0 0 20px rgba(255, 255, 255, 0.18);
 }
 
 .stButton > button:active {
-    background-color: #8f0400 !important;
-    transform: translateY(1px);
+    transform: translateY(1px) scale(0.98);
+
+    box-shadow:
+        0 2px 0 #6e0300,
+        0 5px 12px rgba(225, 6, 0, 0.4);
 }
 
 /* CALCULATOR */
@@ -152,12 +289,12 @@ st.markdown("""
 
 .calculator-container .stButton > button {
     width: 100%;
-    min-height: 60px;
+    min-height: 70px;
 
-    font-size: 22px;
-    font-weight: bold;
+    font-size: 26px;
+    font-weight: 800;
 
-    border-radius: 10px;
+    border-radius: 12px;
 }
 
 /* MOBILE */
@@ -181,10 +318,246 @@ st.markdown("""
     }
 }
 
+/* =========================================================
+   SHARED "PANEL" LOOK FOR EVERY APP PAGE
+   ========================================================= */
+
+.f1-card {
+    background: linear-gradient(
+        160deg,
+        rgba(30, 30, 30, 0.75) 0%,
+        rgba(10, 10, 10, 0.85) 100%
+    );
+
+    border: 1px solid rgba(225, 6, 0, 0.35);
+    border-radius: 16px;
+
+    padding: 22px 24px;
+    margin-bottom: 18px;
+
+    backdrop-filter: blur(6px);
+
+    box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+    position: relative;
+    overflow: hidden;
+}
+
+.f1-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+
+    background: linear-gradient(
+        90deg,
+        #e10600 0%,
+        #ffffff 50%,
+        #e10600 100%
+    );
+
+    opacity: 0.85;
+}
+
+.f1-flag-divider {
+    height: 6px;
+    margin: 18px 0;
+    border-radius: 3px;
+
+    background-image:
+        linear-gradient(45deg, #fff 25%, transparent 25%),
+        linear-gradient(-45deg, #fff 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #fff 75%),
+        linear-gradient(-45deg, transparent 75%, #fff 75%);
+
+    background-color: #1a1a1a;
+    background-size: 12px 12px;
+    background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+}
+
+/* GLOWING PAGE TITLES */
+
+h1, h2, h3 {
+    text-shadow: 0 0 14px rgba(225, 6, 0, 0.35);
+}
+
+/* LABEL CHIPS (used on the profile card) */
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.chip {
+    background: rgba(225, 6, 0, 0.14);
+    border: 1px solid rgba(225, 6, 0, 0.55);
+    border-radius: 999px;
+
+    padding: 8px 16px;
+
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+
+    white-space: nowrap;
+}
+
+/* DRIVER-CARD HEADER (profile) */
+
+.driver-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.driver-number {
+    font-size: 46px;
+    font-weight: 900;
+    color: #e10600;
+    text-shadow: 0 0 18px rgba(225, 6, 0, 0.6);
+    line-height: 1;
+}
+
+.driver-name {
+    font-size: 26px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* GRADE BADGE (grade calculator) */
+
+.grade-badge-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 4px 0;
+}
+
+.grade-badge {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 46px;
+    font-weight: 900;
+
+    color: #0a0a0a;
+
+    box-shadow:
+        0 0 0 4px rgba(255, 255, 255, 0.15) inset,
+        0 8px 22px rgba(0, 0, 0, 0.5);
+}
+
+.grade-gold {
+    background: radial-gradient(circle at 35% 30%, #fff4c2, #d9a400 70%);
+}
+
+.grade-silver {
+    background: radial-gradient(circle at 35% 30%, #f5f5f5, #9a9a9a 70%);
+}
+
+.grade-bronze {
+    background: radial-gradient(circle at 35% 30%, #f0c090, #a15c2b 70%);
+}
+
+.grade-red {
+    background: radial-gradient(circle at 35% 30%, #ff8a80, #b80500 70%);
+    color: #fff;
+}
+
+/* FUEL-GAUGE STYLE PROGRESS BARS */
+
+[data-testid="stProgress"] > div > div {
+    background: linear-gradient(90deg, #6e0300, #e10600 60%, #ff6a4d) !important;
+    box-shadow: 0 0 10px rgba(225, 6, 0, 0.6);
+}
+
+[data-testid="stProgress"] {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    padding: 2px;
+}
+
+/* METRIC CARD (quiz score) */
+
+[data-testid="stMetric"] {
+    background: rgba(225, 6, 0, 0.10);
+    border: 1px solid rgba(225, 6, 0, 0.4);
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-align: center;
+}
+
+[data-testid="stMetricValue"] {
+    color: #ffffff !important;
+    text-shadow: 0 0 16px rgba(225, 6, 0, 0.6);
+}
+
+/* QUIZ ANSWER OPTIONS AS CLICKABLE CARDS */
+
+[data-testid="stRadio"] > div {
+    gap: 10px;
+}
+
+[data-testid="stRadio"] label {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+
+    padding: 12px 16px !important;
+    margin: 0 !important;
+    width: 100%;
+
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+}
+
+[data-testid="stRadio"] label:hover {
+    background: rgba(225, 6, 0, 0.14);
+    border-color: rgba(225, 6, 0, 0.6);
+    transform: translateX(3px);
+}
+
+[data-testid="stRadio"] label:has(input:checked) {
+    background: rgba(225, 6, 0, 0.28);
+    border-color: #e10600;
+    box-shadow: 0 0 12px rgba(225, 6, 0, 0.4);
+}
+
+/* TEXT / NUMBER INPUTS TO MATCH THE THEME */
+
+.stTextInput input,
+.stNumberInput input,
+.stSelectbox [data-baseweb="select"] {
+    background-color: #141414 !important;
+    color: #fff !important;
+    border: 1px solid rgba(225, 6, 0, 0.4) !important;
+    border-radius: 10px !important;
+}
+
+.stTextInput input:focus,
+.stNumberInput input:focus {
+    border-color: #e10600 !important;
+    box-shadow: 0 0 0 2px rgba(225, 6, 0, 0.25) !important;
+}
+
 </style>
 
 <div class="f1-racing-stripes"></div>
-<div class="race-lines"></div>
+<div class="neon-grid"></div>
+<div class="glow-accent"></div>
+<div class="neon-skyline"></div>
+<div class="speed-streaks"></div>
 
 """, unsafe_allow_html=True)
 
@@ -459,6 +832,8 @@ def profile_page():
 
     st.title("👤 My Profile")
 
+    st.markdown('<div class="f1-card">', unsafe_allow_html=True)
+
     st.write("Fill in your information below!")
 
     name = st.text_input("Name")
@@ -482,17 +857,23 @@ def profile_page():
 
             st.success("Profile created!")
 
-            st.header(
-                f"Hello! My name is {name}."
-            )
-
-            st.write(f"🎂 I am {age} years old.")
-            st.write(f"🏫 I go to {school}.")
-            st.write(
-                f"📚 My favorite subject is {subject}."
-            )
-            st.write(
-                f"🎮 I enjoy {hobby}."
+            st.markdown(
+                f"""
+                <div class="f1-card">
+                    <div class="driver-card-header">
+                        <div class="driver-number">#{int(age):02d}</div>
+                        <div class="driver-name">{name}</div>
+                    </div>
+                    <div class="f1-flag-divider"></div>
+                    <div class="chip-row">
+                        <div class="chip">🏫 {school}</div>
+                        <div class="chip">📚 {subject}</div>
+                        <div class="chip">🎮 {hobby}</div>
+                        <div class="chip">🎂 Age {age}</div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
             )
 
         else:
@@ -500,6 +881,8 @@ def profile_page():
             st.warning(
                 "Please fill in all the information."
             )
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.divider()
 
@@ -518,12 +901,28 @@ def profile_page():
 
 def calculator_page():
 
-    st.title("🧮 Calculator")
+    st.title("🧮 Pit Lane Calculator")
 
     st.markdown(
-        '<div class="calculator-container">',
+        '<div class="f1-card"><div class="calculator-container">',
         unsafe_allow_html=True
     )
+
+    # OPERATOR STATUS BADGE
+
+    if st.session_state.calc_operator is not None:
+
+        st.markdown(
+            f"""
+            <div class="chip-row" style="margin-bottom: 10px;">
+                <div class="chip">
+                    {format_result(st.session_state.calc_first_number)}
+                    {st.session_state.calc_operator}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     # DISPLAY
 
@@ -608,7 +1007,7 @@ def calculator_page():
                     st.rerun()
 
     st.markdown(
-        "</div>",
+        "</div></div>",
         unsafe_allow_html=True
     )
 
@@ -630,6 +1029,8 @@ def calculator_page():
 def grades_page():
 
     st.title("📊 Grade Calculator")
+
+    st.markdown('<div class="f1-card">', unsafe_allow_html=True)
 
     st.write(
         "Enter your subjects and marks."
@@ -681,63 +1082,64 @@ def grades_page():
 
         average = total / number_of_subjects
 
-        st.subheader(
-            f"Average: {average:.1f}%"
-        )
-
         if average >= 90:
 
             grade = "A"
+            badge_class = "grade-gold"
+            podium = "🥇"
+            message = "Excellent work! Pole position!"
 
         elif average >= 80:
 
             grade = "B"
+            badge_class = "grade-silver"
+            podium = "🥈"
+            message = "Great job! Solid podium finish!"
 
         elif average >= 70:
 
             grade = "C"
+            badge_class = "grade-bronze"
+            podium = "🥉"
+            message = "Good work! Points finish!"
 
         elif average >= 60:
 
             grade = "D"
+            badge_class = "grade-red"
+            podium = "🏁"
+            message = "Keep practicing! Just outside the points."
 
         else:
 
             grade = "F"
+            badge_class = "grade-red"
+            podium = "🔧"
+            message = "Back to the garage — keep studying, don't give up!"
 
-        st.success(
-            f"Overall Grade: {grade}"
+        st.markdown(
+            f"""
+            <div class="f1-card">
+                <div style="text-align:center;">
+                    <div style="font-size:15px; letter-spacing:2px; opacity:0.75; text-transform:uppercase;">
+                        Race Result
+                    </div>
+                    <div class="grade-badge-wrap">
+                        <div class="grade-badge {badge_class}">{grade}</div>
+                    </div>
+                    <div style="font-size:22px; font-weight:800; margin-top:6px;">
+                        {podium} {average:.1f}% average
+                    </div>
+                    <div style="opacity:0.85; margin-top:4px;">
+                        {message}
+                    </div>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
         )
 
-        if average >= 90:
-
-            st.write(
-                "🏆 Excellent work!"
-            )
-
-        elif average >= 80:
-
-            st.write(
-                "🔥 Great job! Keep it up!"
-            )
-
-        elif average >= 70:
-
-            st.write(
-                "👍 Good work!"
-            )
-
-        elif average >= 60:
-
-            st.write(
-                "📚 Keep practicing!"
-            )
-
-        else:
-
-            st.write(
-                "💪 Keep studying and don't give up!"
-            )
+        st.progress(min(average / 100, 1.0))
 
         st.divider()
 
@@ -748,6 +1150,8 @@ def grades_page():
         st.info(
             "Build a safe base before exploring dangerous areas!"
         )
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.divider()
 
@@ -788,8 +1192,13 @@ def quiz_setup_page():
 
     for i in range(int(number_of_questions)):
 
-        st.subheader(
-            f"Question {i + 1}"
+        st.markdown(f'<div class="f1-card">', unsafe_allow_html=True)
+
+        st.markdown(
+            f'<div style="font-weight:800; font-size:18px; '
+            f'color:#e10600; text-transform:uppercase; '
+            f'letter-spacing:1px;">🏁 Question {i + 1}</div>',
+            unsafe_allow_html=True
         )
 
         question = st.text_input(
@@ -820,7 +1229,7 @@ def quiz_setup_page():
             "correct": correct - 1
         })
 
-        st.divider()
+        st.markdown('</div>', unsafe_allow_html=True)
 
     if st.button(
         "🏁 Start Quiz",
@@ -892,12 +1301,19 @@ def quiz_page():
         (current + 1) / len(questions)
     )
 
-    st.subheader(
-        f"Question {current + 1} of {len(questions)}"
+    st.markdown('<div class="f1-card">', unsafe_allow_html=True)
+
+    st.markdown(
+        f'<div style="letter-spacing:2px; opacity:0.7; '
+        f'text-transform:uppercase; font-size:13px;">'
+        f'Lap {current + 1} of {len(questions)}</div>',
+        unsafe_allow_html=True
     )
 
-    st.write(
-        question["question"]
+    st.markdown(
+        f'<div style="font-size:22px; font-weight:800; margin:6px 0 16px 0;">'
+        f'{question["question"]}</div>',
+        unsafe_allow_html=True
     )
 
     current_answer = st.session_state.quiz_answers[current]
@@ -916,6 +1332,8 @@ def quiz_page():
         st.session_state.quiz_answers[current] = (
             question["choices"].index(selected)
         )
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
 
@@ -981,32 +1399,75 @@ def quiz_results_page():
         score / len(questions)
     ) * 100
 
-    st.metric(
-        "Score",
-        f"{score}/{len(questions)}"
+    if percentage >= 90:
+
+        podium = "🥇"
+        podium_msg = "P1! A flawless race!"
+
+    elif percentage >= 70:
+
+        podium = "🥈"
+        podium_msg = "P2! A strong result!"
+
+    elif percentage >= 50:
+
+        podium = "🥉"
+        podium_msg = "P3! On the podium!"
+
+    else:
+
+        podium = "🏁"
+        podium_msg = "You crossed the finish line — try again for a better time!"
+
+    st.markdown(
+        f"""
+        <div class="f1-card" style="text-align:center;">
+            <div style="font-size:52px;">{podium}</div>
+            <div style="font-size:22px; font-weight:800; margin-top:4px;">
+                {podium_msg}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+
+        st.metric(
+            "Score",
+            f"{score}/{len(questions)}"
+        )
+
+    with col2:
+
+        st.metric(
+            "Accuracy",
+            f"{percentage:.0f}%"
+        )
 
     st.progress(
         percentage / 100
     )
 
-    st.subheader(
-        f"You scored {percentage:.0f}%"
-    )
-
-    st.divider()
+    st.markdown('<div class="f1-flag-divider"></div>', unsafe_allow_html=True)
 
     for i, question in enumerate(questions):
-
-        st.write(
-            f"**{i + 1}. {question['question']}**"
-        )
 
         user_answer = answers[i]
 
         correct_answer = question["correct"]
 
-        if user_answer == correct_answer:
+        is_correct = user_answer == correct_answer
+
+        st.markdown('<div class="f1-card">', unsafe_allow_html=True)
+
+        st.write(
+            f"**{i + 1}. {question['question']}**"
+        )
+
+        if is_correct:
 
             st.success(
                 f"Correct: {question['choices'][correct_answer]}"
@@ -1025,6 +1486,8 @@ def quiz_results_page():
                     f"Your answer: "
                     f"{question['choices'][user_answer]}"
                 )
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
     st.divider()
 
