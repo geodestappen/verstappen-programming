@@ -1,5 +1,7 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import math
+import random
 
 # =========================================================
 # PAGE SETUP
@@ -182,6 +184,20 @@ st.markdown("""
 
 /* RED BUTTONS — BIG, GLOSSY, WITH A SHINE SWEEP */
 
+@keyframes idleGlow {
+    0%, 100% {
+        box-shadow:
+            0 4px 0 #6e0300,
+            0 10px 22px rgba(225, 6, 0, 0.4);
+    }
+    50% {
+        box-shadow:
+            0 4px 0 #6e0300,
+            0 12px 30px rgba(225, 6, 0, 0.7),
+            0 0 16px rgba(255, 255, 255, 0.18);
+    }
+}
+
 .stButton > button {
     background: linear-gradient(135deg, #ff2200 0%, #b80500 100%) !important;
     color: white !important;
@@ -200,9 +216,7 @@ st.markdown("""
     position: relative;
     overflow: hidden;
 
-    box-shadow:
-        0 4px 0 #6e0300,
-        0 10px 22px rgba(225, 6, 0, 0.4);
+    animation: idleGlow 2.6s ease-in-out infinite;
 
     transition:
         transform 0.15s ease,
@@ -230,10 +244,50 @@ st.markdown("""
 
     transform: skewX(-25deg);
     transition: left 0.6s ease;
+
+    border-radius: inherit;
+    overflow: hidden;
 }
 
 .stButton > button:hover::before {
     left: 130%;
+}
+
+/* little checkered-flag badge that pops in on hover */
+
+.stButton > button::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 16px;
+    height: 16px;
+
+    background-image:
+        linear-gradient(45deg, #fff 25%, transparent 25%),
+        linear-gradient(-45deg, #fff 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #fff 75%),
+        linear-gradient(-45deg, transparent 75%, #fff 75%);
+
+    background-color: #000;
+    background-size: 4px 4px;
+    background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+
+    opacity: 0;
+    transform: scale(0.4) rotate(-25deg);
+
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+.stButton > button:hover::after {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
 }
 
 .stButton > button:hover {
@@ -241,6 +295,8 @@ st.markdown("""
     color: white !important;
 
     border-color: #ffffff !important;
+
+    animation: none;
 
     transform: translateY(-4px) scale(1.03);
 
@@ -251,6 +307,8 @@ st.markdown("""
 }
 
 .stButton > button:active {
+    animation: none;
+
     transform: translateY(1px) scale(0.98);
 
     box-shadow:
@@ -295,6 +353,8 @@ st.markdown("""
     font-weight: 800;
 
     border-radius: 12px;
+
+    animation: none;
 }
 
 /* MOBILE */
@@ -551,6 +611,13 @@ h1, h2, h3 {
     box-shadow: 0 0 0 2px rgba(225, 6, 0, 0.25) !important;
 }
 
+/* SIDEBAR (TETRIS PIT-STOP PANEL) */
+
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #141414 0%, #0a0a0a 100%);
+    border-right: 1px solid rgba(225, 6, 0, 0.35);
+}
+
 </style>
 
 <div class="f1-racing-stripes"></div>
@@ -560,6 +627,394 @@ h1, h2, h3 {
 <div class="speed-streaks"></div>
 
 """, unsafe_allow_html=True)
+
+
+# =========================================================
+# F1 DRIVER FUN FACTS
+# =========================================================
+
+FUN_FACTS = [
+    "Lewis Hamilton holds the record for the most pole positions "
+    "in Formula 1 history.",
+
+    "Michael Schumacher won seven Formula 1 World Championships "
+    "over his career.",
+
+    "Max Verstappen became the youngest driver ever to start an "
+    "F1 race, at just 17 years old.",
+
+    "Niki Lauda survived a horrific fiery crash in 1976 and "
+    "returned to racing only six weeks later.",
+
+    "Juan Manuel Fangio won five World Championships in the "
+    "1950s, a record that stood for decades.",
+
+    "Kimi Räikkönen earned the nickname 'The Iceman' for his "
+    "famously cool, unbothered radio messages.",
+
+    "Sebastian Vettel won four consecutive World Championships "
+    "with Red Bull from 2010 to 2013.",
+
+    "Nigel Mansell is one of the only drivers in history to hold "
+    "the F1 and IndyCar titles back to back.",
+
+    "Alain Prost was nicknamed 'The Professor' for his precise, "
+    "calculated approach to racing.",
+
+    "Daniel Ricciardo is famous for celebrating race wins by "
+    "drinking champagne out of his own shoe — the 'shoey'.",
+
+    "Ayrton Senna and Alain Prost's rivalry in the late 1980s is "
+    "considered one of the fiercest in F1 history.",
+
+    "Jenson Button won the 2009 World Championship driving for "
+    "Brawn GP, a team that only existed for one season.",
+
+    "Fernando Alonso won back-to-back World Championships in "
+    "2005 and 2006 with Renault.",
+
+    "The number '1' is reserved for the reigning World Champion, "
+    "though most choose to keep their permanent number instead.",
+
+    "Charles Leclerc secured his first F1 pole position at the "
+    "circuit named after his hometown, Monaco.",
+]
+
+if "fun_fact_index" not in st.session_state:
+    st.session_state.fun_fact_index = random.randrange(len(FUN_FACTS))
+
+
+# =========================================================
+# SIDEBAR — PIT STOP TETRIS
+# =========================================================
+
+TETRIS_HTML = """
+<div style="text-align:center; font-family:Arial, sans-serif;
+     background:#0a0a0a; padding:10px; border-radius:12px;
+     border:1px solid rgba(225,6,0,0.45);
+     box-shadow:0 0 18px rgba(225,6,0,0.15);">
+
+    <div style="color:#e10600; font-weight:800; letter-spacing:1px;
+         margin-bottom:4px; text-transform:uppercase; font-size:13px;">
+        🏁 Pit Stop Tetris
+    </div>
+
+    <div id="tetris-score" style="color:#fff; font-weight:700;
+         margin-bottom:8px; font-size:13px;">
+        Score: 0
+    </div>
+
+    <canvas id="tetris-canvas" style="background:#000;
+        border:2px solid #e10600; border-radius:8px;
+        outline:none; cursor:pointer;"></canvas>
+
+    <div style="color:#aaa; font-size:10px; margin-top:8px; line-height:1.5;">
+        Click the board, then:<br>
+        ⬅️➡️ move &nbsp; ⬆️ rotate<br>
+        ⬇️ soft drop &nbsp; Space hard drop
+    </div>
+
+    <button id="tetris-restart" style="margin-top:8px;
+        background:linear-gradient(135deg,#ff2200,#b80500); color:#fff;
+        border:1px solid #ff5c48; border-radius:8px; padding:6px 14px;
+        font-weight:700; cursor:pointer;">
+        🔄 Restart
+    </button>
+</div>
+
+<script>
+(function () {
+
+    class BlockGame {
+
+        constructor(canvasId, scoreId) {
+
+            this.canvas = document.getElementById(canvasId);
+            this.ctx = this.canvas.getContext('2d');
+
+            this.cols = 10;
+            this.rows = 20;
+            this.cell = 16;
+
+            this.canvas.width = this.cols * this.cell;
+            this.canvas.height = this.rows * this.cell;
+
+            this.scoreEl = document.getElementById(scoreId);
+
+            this.palette = [
+                null, '#e10600', '#ffffff', '#ff6a4d',
+                '#7a0000', '#e6e6e6', '#b0b0b0', '#ff3b1f'
+            ];
+
+            this.shapes = {
+                I: [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+                O: [[2,2],[2,2]],
+                T: [[0,3,0],[3,3,3],[0,0,0]],
+                S: [[0,4,4],[4,4,0],[0,0,0]],
+                Z: [[5,5,0],[0,5,5],[0,0,0]],
+                J: [[6,0,0],[6,6,6],[0,0,0]],
+                L: [[0,0,7],[7,7,7],[0,0,0]]
+            };
+
+            this.dropTimer = 0;
+            this.dropDelay = 550;
+            this.lastTick = 0;
+            this.started = false;
+
+            this.reset();
+            this.bindKeys();
+
+            requestAnimationFrame(this.loop.bind(this));
+        }
+
+        reset() {
+            this.grid = Array.from(
+                {length: this.rows},
+                () => new Array(this.cols).fill(0)
+            );
+            this.score = 0;
+            this.gameOver = false;
+            this.updateScore();
+            this.spawn();
+        }
+
+        spawn() {
+            const keys = Object.keys(this.shapes);
+            const key = keys[(Math.random() * keys.length) | 0];
+
+            this.shape = this.shapes[key].map(row => row.slice());
+            this.pos = {
+                x: ((this.cols / 2) | 0) - ((this.shape[0].length / 2) | 0),
+                y: -1
+            };
+
+            if (this.collides(this.shape, this.pos)) {
+                this.gameOver = true;
+            }
+        }
+
+        collides(shape, pos) {
+            for (let y = 0; y < shape.length; y++) {
+                for (let x = 0; x < shape[y].length; x++) {
+                    if (!shape[y][x]) continue;
+
+                    const gx = pos.x + x;
+                    const gy = pos.y + y;
+
+                    if (gx < 0 || gx >= this.cols || gy >= this.rows) {
+                        return true;
+                    }
+
+                    if (gy >= 0 && this.grid[gy][gx]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        lock() {
+            this.shape.forEach((row, y) => {
+                row.forEach((val, x) => {
+                    if (val) {
+                        const gy = this.pos.y + y;
+                        const gx = this.pos.x + x;
+                        if (gy >= 0) this.grid[gy][gx] = val;
+                    }
+                });
+            });
+
+            this.clearRows();
+            this.spawn();
+        }
+
+        clearRows() {
+            let cleared = 0;
+
+            for (let y = this.rows - 1; y >= 0; y--) {
+                if (this.grid[y].every(v => v !== 0)) {
+                    this.grid.splice(y, 1);
+                    this.grid.unshift(new Array(this.cols).fill(0));
+                    cleared++;
+                    y++;
+                }
+            }
+
+            if (cleared > 0) {
+                const table = [0, 10, 30, 50, 80];
+                this.score += table[cleared] || cleared * 20;
+                this.updateScore();
+            }
+        }
+
+        move(dx) {
+            const next = {x: this.pos.x + dx, y: this.pos.y};
+            if (!this.collides(this.shape, next)) this.pos = next;
+        }
+
+        softDrop() {
+            const next = {x: this.pos.x, y: this.pos.y + 1};
+
+            if (!this.collides(this.shape, next)) {
+                this.pos = next;
+            } else {
+                this.lock();
+            }
+
+            this.dropTimer = 0;
+        }
+
+        hardDrop() {
+            while (!this.collides(this.shape, {x: this.pos.x, y: this.pos.y + 1})) {
+                this.pos.y++;
+            }
+            this.lock();
+            this.dropTimer = 0;
+        }
+
+        rotate() {
+            const rotated = this.shape[0].map(
+                (_, i) => this.shape.map(row => row[i]).reverse()
+            );
+
+            if (!this.collides(rotated, this.pos)) {
+                this.shape = rotated;
+                return;
+            }
+
+            for (const shift of [1, -1, 2, -2]) {
+                const test = {x: this.pos.x + shift, y: this.pos.y};
+                if (!this.collides(rotated, test)) {
+                    this.shape = rotated;
+                    this.pos = test;
+                    return;
+                }
+            }
+        }
+
+        bindKeys() {
+            this.canvas.setAttribute('tabindex', '0');
+
+            this.canvas.addEventListener('click', () => {
+                this.canvas.focus();
+                this.started = true;
+            });
+
+            this.canvas.addEventListener('keydown', (e) => {
+                if (this.gameOver) return;
+
+                this.started = true;
+
+                if (e.code === 'ArrowLeft') { e.preventDefault(); this.move(-1); }
+                else if (e.code === 'ArrowRight') { e.preventDefault(); this.move(1); }
+                else if (e.code === 'ArrowDown') { e.preventDefault(); this.softDrop(); }
+                else if (e.code === 'ArrowUp') { e.preventDefault(); this.rotate(); }
+                else if (e.code === 'Space') { e.preventDefault(); this.hardDrop(); }
+            });
+        }
+
+        updateScore() {
+            this.scoreEl.innerText = 'Score: ' + this.score;
+        }
+
+        drawCell(x, y, color) {
+            const c = this.cell;
+            this.ctx.fillStyle = color;
+            this.ctx.fillRect(x * c, y * c, c, c);
+            this.ctx.strokeStyle = 'rgba(0,0,0,0.5)';
+            this.ctx.strokeRect(x * c, y * c, c, c);
+        }
+
+        render() {
+            this.ctx.fillStyle = '#0a0a0a';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            for (let y = 0; y < this.rows; y++) {
+                for (let x = 0; x < this.cols; x++) {
+                    if (this.grid[y][x]) {
+                        this.drawCell(x, y, this.palette[this.grid[y][x]]);
+                    }
+                }
+            }
+
+            this.shape.forEach((row, y) => {
+                row.forEach((val, x) => {
+                    if (val && this.pos.y + y >= 0) {
+                        this.drawCell(
+                            this.pos.x + x,
+                            this.pos.y + y,
+                            this.palette[val]
+                        );
+                    }
+                });
+            });
+
+            if (!this.started && !this.gameOver) {
+                this.ctx.fillStyle = 'rgba(0,0,0,0.55)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.fillStyle = '#ffffff';
+                this.ctx.font = 'bold 12px Arial';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText(
+                    'CLICK TO START',
+                    this.canvas.width / 2,
+                    this.canvas.height / 2
+                );
+            }
+
+            if (this.gameOver) {
+                this.ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.fillStyle = '#e10600';
+                this.ctx.font = 'bold 13px Arial';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText(
+                    'GAME OVER',
+                    this.canvas.width / 2,
+                    this.canvas.height / 2
+                );
+            }
+        }
+
+        loop(ts) {
+            if (this.started && !this.gameOver) {
+                const delta = ts - this.lastTick;
+                this.lastTick = ts;
+                this.dropTimer += delta;
+
+                if (this.dropTimer > this.dropDelay) {
+                    this.softDrop();
+                }
+            } else {
+                this.lastTick = ts;
+            }
+
+            this.render();
+            requestAnimationFrame(this.loop.bind(this));
+        }
+    }
+
+    const game = new BlockGame('tetris-canvas', 'tetris-score');
+
+    document.getElementById('tetris-restart').addEventListener(
+        'click',
+        function () { game.reset(); }
+    );
+
+})();
+</script>
+"""
+
+with st.sidebar:
+
+    st.markdown(
+        '<div style="color:#e10600; font-weight:800; '
+        'text-transform:uppercase; letter-spacing:1px; '
+        'font-size:15px; margin-bottom:8px;">🎮 Pit Lane Arcade</div>',
+        unsafe_allow_html=True
+    )
+
+    components.html(TETRIS_HTML, height=460, scrolling=False)
 
 
 # =========================================================
@@ -822,6 +1277,35 @@ def home_page():
         ):
             st.session_state.page = "profile"
             st.rerun()
+
+    st.markdown('<div class="f1-flag-divider"></div>', unsafe_allow_html=True)
+
+    fact = FUN_FACTS[st.session_state.fun_fact_index]
+
+    st.markdown(
+        f"""
+        <div class="f1-card">
+            <div style="letter-spacing:2px; opacity:0.75;
+                 text-transform:uppercase; font-size:12px;
+                 color:#e10600; font-weight:800;">
+                🏎️ F1 Driver Fun Fact
+            </div>
+            <div style="font-size:16px; margin-top:8px;">
+                {fact}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if st.button(
+        "🎲 New Fact",
+        use_container_width=True
+    ):
+        st.session_state.fun_fact_index = random.randrange(
+            len(FUN_FACTS)
+        )
+        st.rerun()
 
 
 # =========================================================
